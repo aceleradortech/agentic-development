@@ -35,6 +35,9 @@ Tech Spec →  /code        →  invocação explícita do agente coder → cód
 .
 ├── CLAUDE.md                       # índice de Rules (carregado automaticamente)
 ├── rules/                          # convenções modulares (language, stack, patterns, ...)
+├── .claude-plugin/
+│   ├── marketplace.json            # declara este repo como marketplace "acelerador-tech"
+│   └── plugin.json                 # manifesto do plugin "dn-skills"
 ├── .claude/
 │   └── settings.json               # hooks (rules programáticas)
 ├── commands/                       # slash commands (/spec, /plan, /tech-spec, /code)
@@ -50,9 +53,65 @@ Tech Spec →  /code        →  invocação explícita do agente coder → cód
 
 ## ⚙️ Instalação
 
-Este repo é um **skeleton**. Para usar em um projeto real, você tem três opções:
+Este repo é um **skeleton**. Para usar em um projeto real, você tem quatro opções:
 
-### Opção 1 — Copiar (mais simples, versiona junto do projeto)
+### Opção 1 — Plugin marketplace (recomendado)
+
+Este repo se declara como um **marketplace de plugin do Claude Code** (`.claude-plugin/marketplace.json`). Como `commands/`, `agents/` e `skills/` vivem na raiz — o layout que o Claude Code espera de um plugin — o plugin `dn-skills` distribui os três de uma vez, versionados e atualizáveis.
+
+**No projeto-alvo**, adicione ao `.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "acelerador-tech": {
+      "source": {
+        "source": "github",
+        "repo": "aceleradortech/agentic-development"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "dn-skills@acelerador-tech": true
+  }
+}
+```
+
+Depois, uma vez por máquina, dentro do Claude Code:
+
+```
+/plugin marketplace add aceleradortech/agentic-development
+```
+
+**Ainda copie `CLAUDE.md` e `rules/`** — são convenções do projeto e devem divergir por repo (o plugin não sobrescreve regras locais, e nem deveria):
+
+```bash
+cd <seu-projeto>
+cp    <skeleton>/CLAUDE.md ./CLAUDE.md
+cp -r <skeleton>/rules     ./rules
+mkdir -p briefings specs plans tech-specs
+```
+
+**Por que preferir esta opção:** copiar `skills/` para N projetos cria N cópias que divergem em silêncio — você corrige um bug numa e as outras ficam desatualizadas sem nenhum sinal. Com o marketplace existe uma origem só.
+
+#### Atualizando
+
+Editou uma skill, command ou agent aqui? Faça commit e push, e nos consumidores:
+
+```
+/plugin marketplace update acelerador-tech
+```
+
+> **Importante:** o marketplace é buscado do GitHub, não do disco. Alterações locais neste repo **só chegam aos consumidores depois do push**. Enquanto estiver evoluindo o método rapidamente, a Opção 3 (symlink) tem loop de feedback mais curto.
+
+#### Quem já consome
+
+| Repo | Recebe |
+|---|---|
+| `mirae` | `spec-creator`, `task-planner`, `tech-spec-creator` |
+| `imersao-ai-companion` | `java-*`, `jpa-patterns`, `spring-boot`, `tech-spec-creator` |
+
+### Opção 2 — Copiar (mais simples, versiona junto do projeto)
 
 ```bash
 cd <seu-projeto>
@@ -67,7 +126,7 @@ mkdir -p briefings specs plans tech-specs
 
 Depois, **edite os arquivos em `rules/`** para refletir as convenções reais do projeto (stack, auth, testes, padrões de código). **Nenhum método funciona bem com placeholders genéricos.**
 
-### Opção 2 — Symlink (para desenvolver o método em paralelo)
+### Opção 3 — Symlink (para desenvolver o método em paralelo)
 
 Útil enquanto você ainda está evoluindo o método. Mudanças no skeleton se refletem em todos os projetos que linkam.
 
@@ -84,7 +143,7 @@ ln -s <skeleton>/rules     rules
 
 > **Atenção:** `settings.json` normalmente é específico por projeto (permissões, hooks locais). Prefira copiar, não linkar.
 
-### Opção 3 — Instalar no nível do usuário
+### Opção 4 — Instalar no nível do usuário
 
 Para rodar o método em qualquer projeto da máquina sem instalação por repo:
 
