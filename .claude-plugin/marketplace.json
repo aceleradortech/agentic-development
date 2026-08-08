@@ -1,0 +1,18 @@
+{
+  "name": "acelerador-tech",
+  "description": "Skills de engenharia da Acelerador Tech, compartilhadas entre repositórios",
+  "owner": {
+    "name": "Acelerador Tech"
+  },
+  "plugins": [
+    {
+      "name": "dn-skills",
+      "source": "./",
+      "description": "Skills de engenharia: Java/Spring, JPA, C#, specs e planejamento",
+      "category": "productivity",
+      "keywords": ["java", "spring", "jpa", "csharp", "spec-driven", "planning"],
+      "homepage": "https://github.com/aceleradortech/agentic-development",
+      "repository": "https://github.com/aceleradortech/agentic-development"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "dn-skills",
+  "description": "Skills de engenharia da Acelerador Tech para Claude Code",
+  "author": {
+    "name": "Acelerador Tech"
+  },
+  "homepage": "https://github.com/aceleradortech/agentic-development",
+  "repository": "https://github.com/aceleradortech/agentic-development"
+}
